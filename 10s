@@ -1,0 +1,44 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<sys/types.h>
+#include<sys/stat.h>
+#include<unistd.h>
+#define F1 "fifo1"
+#define F2 "fifo2"
+int main()
+{
+char p[100],c[5000];
+int n1,n2,f,f1,f2;
+mknod(F1,S_IFIFO|0666,0);
+mknod(F2,S_IFIFO|0666,0);
+printf("\nServer Online\n");
+f=open(F1,O_RDONLY);
+f2=open(F2,O_WRONLY);
+printf("Server:waiting for client\n");
+if((n1=read(f,p,100))==-1)
+perror("read error");
+else
+{
+p[n1]='\0';
+printf("file is %s",p);
+if((f1=open(p,O_RDONLY))<0)
+{
+write(f2,"file not found",15);
+return 1;
+}
+else
+{
+stdin=fdopen(f1,"r");
+while(fgets(c,5000,stdin!=NULL)
+{
+printf("server transfering contents of %s\n",p);
+if(n2=write(f2,c,strlen(c))==-1)
+printf("error in writing to server");
+else
+printf("\nfile transfer completed");
+}
+}
+}
+}
+

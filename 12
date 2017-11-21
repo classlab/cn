@@ -1,0 +1,47 @@
+#include<stdio.h>
+#include<math.h>
+int min(int a, int b)
+	{
+	return (a<b)?a:b;
+	}
+int sub(int a,int b)
+	{
+	return (a-b)>0?(a-b):0;
+	}
+int main()
+	{
+	int bucket=0,op_rate,i,n,bsize,pkt[10];
+	printf("Enter the number of packets\n:");
+	scanf("%d",&n);
+	printf("Enter the output rate\n");
+	scanf("%d",&op_rate);
+	printf("Enter the bucket size\n");
+	scanf("%d",&bsize);
+	printf("Enter the arriving packets(size in bytes)\n");
+	for(i=0;i<n;i++)
+		scanf("%d",&pkt[i]);
+	printf("\nsec\tpsize\tBucket\tAccept\tReject\tpkt_send\n");
+	printf("--------------------------------------------------\n");
+	for(i=0;i<n;i++)
+		{
+			printf("%d\t%d\t",i+1,pkt[i]);
+			if(bucket+pkt[i]<=bsize)
+				{
+				bucket+=pkt[i];
+				printf("%d\tAccept\t\t%dbytes\n",bucket,min(bucket,op_rate));
+				bucket=sub(bucket,op_rate);
+				}
+			else
+			{
+			printf("%d\tReject\t%dbytes\t%dbytes\n",bucket,bucket+pkt[i]-bsize,min(bsize,op_rate));
+			bucket=bsize;
+			bucket=sub(bucket,op_rate);
+			}
+		}
+	while(bucket!=0)
+		{
+		printf("%d\t0\t%d\tAccept\t%d\n",i++,bucket,min(bucket,op_rate));
+		bucket=sub(bucket,op_rate);
+		}
+		return 0;
+	}

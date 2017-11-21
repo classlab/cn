@@ -1,0 +1,33 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<sys/types.h>
+#include<sys/stat.h>
+#include<unistd.h>
+#define F1 "fifo1"
+#define F2 "fifo2"
+int main()
+{
+char p[100],c[5000];
+int n1,n2,f,f2;
+mknod(F1,S_IFIFO|0666,0);
+mknod(F2,S_IFIFO|0666,0);
+printf("\nClient Online\n");
+f=open(F1,O_WRONLY);
+f2=open(F2,O_RDONLY);
+printf("Client:Enter filename\n");
+gets(p);
+if((n1=(write(f,p,strlen(p)+1))<0))
+{
+printf("write error\n");
+exit(0);
+}
+p[n1]='\0';
+if((n2=read(f2,c,5000))<0)
+{
+perror("error while reading from FIFO");
+exit(0);
+}
+write(1,c,strlen(c));
+return 0;
+}
